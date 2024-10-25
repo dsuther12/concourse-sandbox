@@ -1,6 +1,24 @@
 resources:
-  - name: resource-python-hello
+  - name: git-resource
     type: git
-      source:
-        uri: https://github.com/dsuther12/concourse-sandbox.git
-        branch: master
+    source:
+      uri: https://github.com/dsuther12/concourse-sandbox.git
+      branch: master
+
+jobs:
+  - name: "python-script-job"
+    public: true
+    plan:
+      - get: git-resource
+        trigger: true
+      - task: run-python-task
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: dsuther/concourse-test-python
+          run:
+            path: python
+            args: ["./hello-world.py"]
+
